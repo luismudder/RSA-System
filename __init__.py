@@ -1,13 +1,15 @@
+# importacoes
+#usei o Crypto apenas para  gerar numeros primos
 from Crypto.Util import number
 from os import mkdir
 import operator
-name_dir = input('digite  o nome da nome pasta =>')
-print('criando os numeros')
-x = number.getPrime(2048)
-y = number.getPrime(2048)
-e = number.getPrime(2048)
-n = y*x
-totient = (x-1)*(y-1)
+
+#nome da pasta que sera criada
+name_dir = 'luis'#input('digite  o nome da nome pasta =>')
+
+#Funcao do inverso muiltiplicativo modular
+#peguei de um modulo, por que o que eu fiz ficou muito grande
+#O nome do modulo e Sympy
 def as_int(n, strict=True):
     if strict:
         try:
@@ -69,31 +71,59 @@ def mod_inverse(a, m):
     if c is None:
         raise ValueError('inverse of %s (mod %s) does not exist' % (a, m))
     return c
+
+#gerando os numeros nessesarios para a criptografia
+print('criando os numeros')
+x = number.getPrime(2048)
+y = number.getPrime(2048)
+totient = (x-1)*(y-1)
+e = number.getPrime(2048)
 d = mod_inverse(e, totient)
-print('criando as chaves')
-print('criando a chave publica')
+n = y*x
+
+#criando as pastas onde ficaram as chaves
+print('criando as chaves\ncriando a chave publica')
 mkdir(f'./{name_dir}')
 mkdir(f'{name_dir}/chave publica')
 mkdir(f'{name_dir}/chave publica/Arquivo(Um por vez)')
+
+#pegando um modelo do meu script da chave publica
 data = open('data/public.py', 'r').readlines()
+
+#criando o arquivo da chave publica
 open(f'{name_dir}/chave publica/publica.py', 'w')
 publickey = open(f'{name_dir}/chave publica/publica.py', 'a')
+
+#adicionando as variaves na chave
 publickey.write(f'n = {n}\n')
 publickey.write(f'e = {e}\n')
+
+#adicionando o modelo de chave publica
 for x in data:
 	publickey.write(x)
+
 publickey.close()
-print('chave publica criada')
-print('criando a chave privada')
+
+print('chave publica criada\ncriando a chave privada')
+
+#criando a pasta de chave privada
 mkdir(f'{name_dir}/chave privada')
 mkdir(f'{name_dir}/chave privada/Arquivo(Um por vez)')
+
+#pegando o modelo de chave privada
 datap = open('data/private.py', 'r').readlines()
+
+#criando o arquivo da chave privada
 open(f'{name_dir}/chave privada/privada.py', 'w')
 privatekey = open(f'{name_dir}/chave privada/privada.py', 'a')
+
+#adicionando as variaveis na chave
 privatekey.write(f'n = {n}\n')
 privatekey.write(f'd = {d}\n')
+
+#adicionando o modelo de chave privada
 for x in datap:
 	privatekey.write(x)
-publickey.close()
-print('chave privada criada')
-input('chaves criadas')
+privatekey.close()
+
+input('chave privada criada\nchaves criadas')
